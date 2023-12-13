@@ -62,7 +62,7 @@
                     "provider": {
                         "type": "string",
                         "description": "Name of the data provider.",
-                        "enum": [ "GEO", "ArrayExpress", "PubMed", "other" ]
+                        "enum": [ "GEO", "ArrayExpress", "PubMed", "DOI", "other" ]
                     },
                     "id": {
                         "type": "string",
@@ -83,6 +83,10 @@
                     {
                         "if": { "properties": { "provider": { "const": "PubMed" } } },
                         "then": { "properties": { "id": { "type": "string", "pattern": "^[1-9][0-9]+$" } } }
+                    },
+                    {
+                        "if": { "properties": { "provider": { "const": "DOI" } } },
+                        "then": { "properties": { "id": { "type": "string", "pattern": "^[a-zA-Z0-9\\.]+/[a-zA-Z0-9\\.]+$" } } }
                     },
                     {
                         "if": { "properties": { "provider": { "const": "other" } } },
