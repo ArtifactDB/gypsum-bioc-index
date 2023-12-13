@@ -109,8 +109,8 @@ test("Bioconductor schema behaves as expected", () => {
 
     delete obj.maintainer_email;
     expect(() => validate(obj)).toThrow("maintainer_email");
-    obj.maintainer_email "foo@barcom";
+    obj.maintainer_email = "foo@barcom";
     expect(() => validate(obj)).toThrow("pattern");
-    obj.maintainer_email "foobar.ccom";
+    obj.maintainer_email = "foobar.ccom";
     expect(() => validate(obj)).toThrow("pattern");
 })
