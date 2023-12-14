@@ -47,7 +47,8 @@
                     "GRCz10",
                     "GRCz11",
                     "Rnor_5.0",
-                    "Rnor_6.0"
+                    "Rnor_6.0",
+                    "Xenla9.1"
                 ]
             },
             "uniqueItems": true
