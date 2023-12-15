@@ -1,9 +1,9 @@
 import * as s3 from "./publicS3Config";
-import { S3Client, ListBucketsV2Command } as aws from "@aws-sdk/client-s3";
+import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
 
-export function listFiles(project, asset, version, config = null) {
+export async function listFiles(project, asset, version, config = null) {
     if (config === null) {
-        config = s3.publicS3Config();
+        config = await s3.publicS3Config();
     }
 
     const S3 = new S3Client({
@@ -22,7 +22,7 @@ export function listFiles(project, asset, version, config = null) {
     while (true) {
         let out = await S3.send(new ListObjectsV2Command(options));
         for (const x of out.Contents) {
-            accumulated.push(x.key);
+            accumulated.push(x.Key);
         }
         if (!out.IsTruncated) {
             break;
