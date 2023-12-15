@@ -1,5 +1,6 @@
 import * as init from "../src/initializeFromSchema.js";
 import * as convert from "../src/converterFromSchema.js";
+import { runSqlStatements } from "../src/runSqlStatements.js";
 import schema from "../schemas/bioconductor.json";
 import { examples } from "./examples.js";
 import Database from "better-sqlite3"
@@ -7,15 +8,11 @@ import Database from "better-sqlite3"
 test("converterFromSchema works as expected", () => {
     const initialized = init.initializeFromSchema(schema);
     const db = new Database(':memory:');
-    const init_str = initialized.join("\n");
-    db.exec(init_str);
+    db.exec(initialized);
 
     const converter = convert.converterFromSchema(schema);
     let statements = converter("foo", "bar", "v1", "asd/asd", "summarized_experiment", examples[0]); 
-
-    for (const s of statements) {
-        db.prepare(s.statement).run(...(s.parameters));
-    }
+    runSqlStatements(db, statements);
 
     // Checking that we have entries in each of the tables.
     let res = db.prepare("SELECT COUNT(*) FROM multi_genome").all();

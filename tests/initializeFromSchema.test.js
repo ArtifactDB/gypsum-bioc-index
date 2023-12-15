@@ -5,8 +5,7 @@ import Database from "better-sqlite3"
 test("initializerFromSchema works as expected", () => {
     const initialized = init.initializeFromSchema(schema);
     const db = new Database(':memory:');
-    const init_str = initialized.join("\n");
-    db.exec(init_str);
+    db.exec(initialized);
 
     let listing = db.pragma("table_list");
     let available = listing.filter(y => y.type == "table" || y.type == "virtual").map(y => y.name);
@@ -21,7 +20,7 @@ test("initializerFromSchema works as expected", () => {
     let res = db.prepare("SELECT COUNT(*) FROM multi_genome").all();
     expect(res[0]["COUNT(*)"]).toBe(1);
 
-    db.exec(init_str);
+    db.exec(initialized);
     res = db.prepare("SELECT COUNT(*) FROM multi_genome").all();
     expect(res[0]["COUNT(*)"]).toBe(0);
 })

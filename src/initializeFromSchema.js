@@ -65,5 +65,5 @@ export function initializeFromSchema(schema) {
         commands.push(`CREATE VIRTUAL TABLE free_text USING fts5(_key, ${fts_table});`);
     }
 
-    return commands;
+    return commands.join("\n");
 }
