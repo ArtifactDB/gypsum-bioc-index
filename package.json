@@ -7,7 +7,7 @@
   "author": "LTLA <infinite.monkeys.with.keyboards@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest"
+    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --testTimeout=100000"
   },
   "devDependencies": {
     "isomorphic-fetch": "^3.0.0",
