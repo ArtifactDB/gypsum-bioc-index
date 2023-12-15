@@ -1,6 +1,6 @@
 const known_mappings = { integer: "INTEGER", number: "REAL", boolean: "INTEGER", string: "TEXT" };
 
-export function initializerFromSchema(schema, { name = "initialize" } = {}) {
+export function initializeFromSchema(schema) {
     let main_table = [
         ["_project", "TEXT"],
         ["_asset", "TEXT"],
@@ -21,7 +21,7 @@ export function initializerFromSchema(schema, { name = "initialize" } = {}) {
 
         } else if (x.type == "array") {
             let table_name = "multi_" + n;
-            commands.push(`DROP TABLE IF EXISTS ${table_name}`);
+            commands.push(`DROP TABLE IF EXISTS ${table_name};`);
             let itype = x.items.type;
 
             if (itype in known_mappings) {
@@ -65,11 +65,5 @@ export function initializerFromSchema(schema, { name = "initialize" } = {}) {
         commands.push(`CREATE VIRTUAL TABLE free_text USING fts5(_key, ${fts_table});`);
     }
 
-    // Formatting the output.
-    let body = "{\n    return `\n" + commands.join("\n") + "`;\n}";
-    if (name !== null) {
-        return "function " + name + "() " + body;
-    } else {
-        return "() => " + body;
-    }
+    return commands;
 }
