@@ -101,7 +101,7 @@
         "maintainer_name": {
             "type": "string",
             "description": "Name of the maintainer. This should contain at least the first and last names separated by a space.",
-            "pattern": "^[^\\s]+(?: [^\\s]+)$",
+            "pattern": "^[^\\s]+(?: [^\\s]+)+$",
             "_attributes": [ "free_text" ]
         },
 
