@@ -1,11 +1,7 @@
-import { fetchJson } from "./fetchJson.js";
-import { setupS3 } from "./setupS3.js";
-import { ListObjectsV2Command } from "@aws-sdk/client-s3";
+import { quickList } from "./utils.js";
 
-export async function scanLogs(since, { maxKeys = 1000 } = {}) {
-    let { bucket, client } = await setupS3();
-    let prefix = "..logs/";
-    let options = { Bucket: bucket, Prefix: prefix, MaxKeys: maxKeys };
+export async function scanLogs(since) {
+    const prefix = "..logs/";
 
     // Rewinding a day and using that as the starting key.  The idea is to
     // improve the efficiency of the list operation by skipping things that
@@ -15,14 +11,12 @@ export async function scanLogs(since, { maxKeys = 1000 } = {}) {
     // don't skip things we might still need to process, but in any case,
     // we still need to check the times manually to 'since'.
     let after = new Date(since.getTime() - 24 * 60 * 60 * 1000);
-    options.StartAfter = prefix + String(after.getYear()) + "-" + String(after.getMonth()) + "-" + String(after.getDate())
+    let after_name = prefix + String(after.getYear()) + "-" + String(after.getMonth()) + "-" + String(after.getDate())
 
     let accumulated = [];
-    while (true) {
-        let out = await client.send(new ListObjectsV2Command(options));
-
-        if ("Contents" in out) {
-            for (const x of out.Contents) {
+    await quickList({ Prefix: prefix, StartAfter: after_name }, resp => {
+        if ("Contents" in resp) {
+            for (const x of resp.Contents) {
                 // Parsing out the time and comparing it to 'since'.
                 let i = x.Key.indexOf("_");
                 if (i < 0) {
@@ -40,12 +34,7 @@ export async function scanLogs(since, { maxKeys = 1000 } = {}) {
                 }
             }
         }
-
-        if (!out.IsTruncated) {
-            break;
-        }
-        options.ContinuationToken = out.NextContinuationToken;
-    }
+    });
 
     accumulated.sort((a, b) => a.time - b.time);
     return accumulated;

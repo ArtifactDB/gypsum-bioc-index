@@ -1,23 +1,15 @@
-import * as s3 from "./setupS3.js";
-import { ListObjectsV2Command } from "@aws-sdk/client-s3";
+import { quickList } from "./utils.js";
 
-export async function listVersionFiles(project, asset, version, { maxKeys = 1000 } = {}) {
-    const { bucket, client } = await s3.setupS3();
-
+export async function listVersionFiles(project, asset, version) {
     let prefix = project + "/" + asset + "/" + version;
-    let options = { Bucket: bucket, Prefix: prefix + "/", MaxKeys: maxKeys };
+    let options = { Prefix: prefix + "/" };
     let accumulated = [];
-
-    while (true) {
-        let out = await client.send(new ListObjectsV2Command(options));
-        for (const x of out.Contents) {
-            accumulated.push(x.Key);
+    await quickList(options, resp => {
+        if ("Contents" in resp) {
+            for (const x of resp.Contents) {
+                accumulated.push(x.Key);
+            }
         }
-        if (!out.IsTruncated) {
-            break;
-        }
-        options.ContinuationToken = out.NextContinuationToken;
-    }
-
+    });
     return accumulated;
 }
