@@ -1,14 +1,14 @@
 import * as val from "../src/validatorFromSchema.js";
 import schema from "../schemas/bioconductor.json";
 import { examples } from "./examples.js";
+import Ajv from "ajv";
 
 test("validatorFromSchema works as expected", () => {
     const validator = val.validatorFromSchema(schema);
-    expect(validator(examples[0])).toBe(true);
-    expect(validator(examples[1])).toBe(true);
+    validator(examples[0]);
+    validator(examples[1]);
 
     let test = {...(examples[0])};
     delete test.title;
-    expect(validator(test)).toBe(false);
-    expect(validator.errors[0].message).toMatch("title");
+    expect(() => validator(test)).toThrow("title");
 })

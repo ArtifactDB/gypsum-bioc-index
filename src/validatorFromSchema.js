@@ -3,5 +3,10 @@ import Ajv from "ajv";
 export function validatorFromSchema(schema) {
     const ajv = new Ajv();
     ajv.addKeyword("_attributes")
-    return ajv.compile(schema);
+    let validator = ajv.compile(schema);
+    return x => {
+        if (!validator(x)) {
+            throw new Error(ajv.errorsText(validator.errors));
+        }
+    };
 }
