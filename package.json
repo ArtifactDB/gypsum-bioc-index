@@ -5,6 +5,7 @@
   "type": "module",
   "description": "Index for Bioconductor-related metadata in gypsum backends",
   "author": "LTLA <infinite.monkeys.with.keyboards@gmail.com>",
+  "main": "src/index.js",
   "license": "MIT",
   "scripts": {
     "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --testTimeout=100000"
