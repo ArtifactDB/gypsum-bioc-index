@@ -1,7 +1,7 @@
 import * as s3 from "./publicS3Config";
 import { S3Client, ListObjectsV2Command } from "@aws-sdk/client-s3";
 
-export async function listFiles(project, asset, version, config = null) {
+export async function listFiles(project, asset, version, { config = null, maxKeys = 1000 } = {}) {
     if (config === null) {
         config = await s3.publicS3Config();
     }
@@ -16,7 +16,7 @@ export async function listFiles(project, asset, version, config = null) {
     });
 
     let prefix = project + "/" + asset + "/" + version;
-    let options = { Bucket: config.bucket, Prefix: prefix + "/" };
+    let options = { Bucket: config.bucket, Prefix: prefix + "/", MaxKeys: maxKeys };
     let accumulated = [];
 
     while (true) {
@@ -27,7 +27,7 @@ export async function listFiles(project, asset, version, config = null) {
         if (!out.IsTruncated) {
             break;
         }
-        options.ContinuationToken = out.ContinuationToken;
+        options.ContinuationToken = out.NextContinuationToken;
     }
 
     return accumulated;

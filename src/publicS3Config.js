@@ -1,6 +1,6 @@
 var cached = null;
 
-export async function publicS3Config(url = null) {
+export async function publicS3Config({ url = null } = {}) {
     if (cached !== null) {
         return cached;
     }
