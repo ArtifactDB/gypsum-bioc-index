@@ -30,8 +30,8 @@ export function converterFromSchema(schema) {
         const statements = [];
 
         {
-            let current_values = [];
-            let current_columns = [];
+            let current_values = [key, project, asset, version, path, object];
+            let current_columns = ["_key", "_project", "_asset", "_version", "_path", "_object"];
             for (const y of overlord_inserts) {
                 if (y in metadata) {
                     current_columns.push(y);
@@ -39,14 +39,14 @@ export function converterFromSchema(schema) {
                 }
             }
             statements.push({ 
-                statement: `INSERT INTO overlord (_key, _project, _asset, _version, _path, _object, ${current_columns}) VALUES(${Array(current_columns.length + 6).fill('?')});`,
-                parameters: [key, project, asset, version, path, object, ...current_values]
+                statement: `INSERT INTO overlord (${current_columns}) VALUES(${Array(current_columns.length).fill('?')});`,
+                parameters: current_values
             });
         }
 
-        {
-            let current_values = [];
-            let current_columns = [];
+        if (free_text_inserts.length) {
+            let current_values = [key];
+            let current_columns = ["_key"];
             for (const y of free_text_inserts) {
                 if (y in metadata) {
                     current_columns.push(y);
@@ -54,8 +54,8 @@ export function converterFromSchema(schema) {
                 }
             }
             statements.push({ 
-                statement: `INSERT INTO free_text (_key, ${current_columns}) VALUES(${Array(current_columns.length + 1).fill('?')});`,
-                parameters: [key, ...current_values]
+                statement: `INSERT INTO free_text (${current_columns}) VALUES(${Array(current_columns.length).fill('?')});`,
+                parameters: current_values
             });
         }
 
@@ -78,8 +78,8 @@ export function converterFromSchema(schema) {
                 continue;
             }
             for (const meta of metadata[name]) {
-                let current_values = [];
-                let current_columns = [];
+                let current_values = [key];
+                let current_columns = ["_key"];
                 for (const y of fields) {
                     if (y in meta) {
                         current_columns.push(y);
@@ -87,8 +87,8 @@ export function converterFromSchema(schema) {
                     }
                 }
                 statements.push({ 
-                    statement: `INSERT INTO ${tab} (_key, ${current_columns}) VALUES(${Array(current_columns.length + 1).fill('?')});`,
-                    parameters: [key, ...current_values]
+                    statement: `INSERT INTO ${tab} (${current_columns}) VALUES(${Array(current_columns.length).fill('?')});`,
+                    parameters: current_values
                 });
             }
         }
