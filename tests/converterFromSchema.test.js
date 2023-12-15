@@ -4,7 +4,7 @@ import schema from "../schemas/bioconductor.json";
 import { examples } from "./examples.js";
 import Database from "better-sqlite3"
 
-test("converterFromSchema works as expected", async () => {
+test("converterFromSchema works as expected", () => {
     const initialized = init.initializeFromSchema(schema);
     const db = new Database(':memory:');
     const init_str = initialized.join("\n");

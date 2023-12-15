@@ -1,4 +1,4 @@
-export function wiperFromSchema(schema, { name = "wipe" } = {}) {
+export function wiperFromSchema(schema) {
     const tables = new Set(["overlord"]);
 
     for (const [n, x] of Object.entries(schema.properties)) {
@@ -11,36 +11,27 @@ export function wiperFromSchema(schema, { name = "wipe" } = {}) {
         }
     }
 
-    let commands = [];
-    commands.push(`
-statements.push({
-    statement: \`CREATE TEMP TABLE tmp_deleted AS SELECT _key FROM overlord WHERE _project = ? AND _asset = ?;\`,
-    parameters: [ project, asset ]
-});`)
+    return (project, asset, version) => {
+        let selector = "CREATE TEMP TABLE tmp_deleted AS SELECT _key FROM overlord WHERE _project = ?";
+        let params = [ project ];
 
-    for (const tab of tables) {
-        commands.push(`
-statements.push({
-    statement: "DELETE FROM ${tab} WHERE _key IN (SELECT _key FROM tmp_deleted);",
-    parameters: null
-});`);
-    }
+        if (asset !== null) {
+            selector += " AND _asset = ?";
+            params.push(asset);
+        }
+        if (version !== null) {
+            selector += " AND _version = ?";
+            params.push(version);
+        }
 
-    // Formatting the output.
-    let code = "";
-    if (name !== null) {
-        code += "function " + name;
-    }
-    code += "(project, asset)";
-    if (name === null) {
-        code += " =>"
-    }
-    code += " {\n";
-    code += "    const statements = [];\n";
-    for (const cmd of commands) {
-        code += cmd.replaceAll("\n", "\n    ");
-    }
-    code += "\n    return statements;\n}";
+        let statements = [{ statement: selector + ";", parameters: params }];
+        for (const tab of tables) {
+            statements.push({
+                statement: `DELETE FROM ${tab} WHERE _key IN (SELECT _key FROM tmp_deleted);`,
+                parameters: []
+            });
+        }
 
-    return code;
+        return statements;
+    };
 }

@@ -2,7 +2,7 @@ import * as init from "../src/initializeFromSchema.js";
 import schema from "../schemas/bioconductor.json";
 import Database from "better-sqlite3"
 
-test("initializerFromSchema works as expected", async () => {
+test("initializerFromSchema works as expected", () => {
     const initialized = init.initializeFromSchema(schema);
     const db = new Database(':memory:');
     const init_str = initialized.join("\n");

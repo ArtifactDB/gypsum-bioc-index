@@ -2,7 +2,7 @@ import * as val from "../src/validatorFromSchema.js";
 import schema from "../schemas/bioconductor.json";
 import { examples } from "./examples.js";
 
-test("validatorFromSchema works as expected", async () => {
+test("validatorFromSchema works as expected", () => {
     const validator = val.validatorFromSchema(schema);
     expect(validator(examples[0])).toBe(true);
     expect(validator(examples[1])).toBe(true);
