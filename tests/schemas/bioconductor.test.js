@@ -1,4 +1,4 @@
-import schema from "../schemas/bioconductor.json";
+import schema from "../../schemas/bioconductor.json";
 import Ajv from "ajv";
 
 test("Bioconductor schema behaves as expected", () => {
