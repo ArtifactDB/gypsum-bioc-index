@@ -28,7 +28,7 @@ const asset = "zeisel-brain-2015";
 const version = "2023-12-14";
 
 function extract_count(handle) {
-    let res = handle.prepare("SELECT COUNT(*) FROM overlord").all();
+    let res = handle.prepare("SELECT COUNT(*) FROM core").all();
     return res[0]["COUNT(*)"];
 }
 
@@ -74,7 +74,7 @@ test("handleAction works correctly when deleting a version", async () => {
     // Injecting a bunch of crap.
     for (const db of Object.values(handles)) {
         for (const key of ["foo", "bar"]) {
-            db.prepare("INSERT INTO overlord(_key, _project, _asset) VALUES(?,?,?)").run(key, project, asset);
+            db.prepare("INSERT INTO core(_key, _project, _asset) VALUES(?,?,?)").run(key, project, asset);
         }
     }
     expect(extract_count(handles.bioconductor)).toEqual(2);
@@ -98,8 +98,8 @@ test("handleAction works correctly when deleting an asset", async () => {
 
     // Injecting a bunch of crap.
     for (const db of Object.values(handles)) {
-        db.prepare("INSERT INTO overlord(_key, _project, _asset) VALUES(?,?,?)").run("YAY", project, asset);
-        db.prepare("INSERT INTO overlord(_key, _project, _asset) VALUES(?,?,?)").run("YAY2", project, asset + "2");
+        db.prepare("INSERT INTO core(_key, _project, _asset) VALUES(?,?,?)").run("YAY", project, asset);
+        db.prepare("INSERT INTO core(_key, _project, _asset) VALUES(?,?,?)").run("YAY2", project, asset + "2");
     }
     expect(extract_count(handles.bioconductor)).toEqual(2);
     expect(extract_count(handles.scRNAseq)).toEqual(2);
@@ -119,8 +119,8 @@ test("handleAction works correctly when deleting a project", async () => {
 
     // Injecting a bunch of crap.
     for (const db of Object.values(handles)) {
-        db.prepare("INSERT INTO overlord(_key, _project, _asset) VALUES(?,?,?)").run("YAY", project, asset);
-        db.prepare("INSERT INTO overlord(_key, _project, _asset) VALUES(?,?,?)").run("YAY2", project, asset + "2");
+        db.prepare("INSERT INTO core(_key, _project, _asset) VALUES(?,?,?)").run("YAY", project, asset);
+        db.prepare("INSERT INTO core(_key, _project, _asset) VALUES(?,?,?)").run("YAY2", project, asset + "2");
     }
     expect(extract_count(handles.bioconductor)).toEqual(2);
     expect(extract_count(handles.scRNAseq)).toEqual(2);

@@ -54,10 +54,10 @@ export function initializeFromSchema(schema) {
         }
     }
 
-    commands.push("DROP TABLE IF EXISTS overlord;");
-    commands.push(`CREATE TABLE overlord (_key TEXT PRIMARY_KEY, ${main_table.map(y => y[0] + " " + y[1])});`);
+    commands.push("DROP TABLE IF EXISTS core;");
+    commands.push(`CREATE TABLE core (_key TEXT PRIMARY_KEY, ${main_table.map(y => y[0] + " " + y[1])});`);
     for (const y of main_table) {
-        commands.push(`CREATE INDEX index_overlord_${y[0]} ON overlord(${y[0]});`);
+        commands.push(`CREATE INDEX index_core_${y[0]} ON core(${y[0]});`);
     }
 
     commands.push("DROP TABLE IF EXISTS free_text;");

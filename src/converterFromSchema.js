@@ -1,5 +1,5 @@
 export function converterFromSchema(schema) {
-    let overlord_inserts = [];
+    let core_inserts = [];
     let free_text_inserts = [];
     let array_simple = {};
     let array_complex = {};
@@ -9,7 +9,7 @@ export function converterFromSchema(schema) {
             if ("_attributes" in x && x._attributes.indexOf("free_text") >= 0) {
                 free_text_inserts.push(n);
             } else {
-                overlord_inserts.push(n);
+                core_inserts.push(n);
             }
 
         } else if (x.type == "array") {
@@ -21,7 +21,7 @@ export function converterFromSchema(schema) {
             }
 
         } else {
-            overlord_inserts.push(n);
+            core_inserts.push(n);
         }
     }
 
@@ -32,14 +32,14 @@ export function converterFromSchema(schema) {
         {
             let current_values = [key, project, asset, version, path, object];
             let current_columns = ["_key", "_project", "_asset", "_version", "_path", "_object"];
-            for (const y of overlord_inserts) {
+            for (const y of core_inserts) {
                 if (y in metadata) {
                     current_columns.push(y);
                     current_values.push(metadata[y]);
                 }
             }
             statements.push({ 
-                statement: `INSERT INTO overlord (${current_columns}) VALUES(${Array(current_columns.length).fill('?')});`,
+                statement: `INSERT INTO core (${current_columns}) VALUES(${Array(current_columns.length).fill('?')});`,
                 parameters: current_values
             });
         }

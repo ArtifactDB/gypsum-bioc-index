@@ -21,7 +21,7 @@ test("converterFromSchema works as expected", () => {
     res = db.prepare("SELECT COUNT(*) FROM multi_taxonomy_id").all();
     expect(res[0]["COUNT(*)"]).toBe(2);
 
-    res = db.prepare("SELECT COUNT(*) FROM overlord").all();
+    res = db.prepare("SELECT COUNT(*) FROM core").all();
     expect(res[0]["COUNT(*)"]).toBe(1);
 
     res = db.prepare("SELECT COUNT(*) FROM free_text").all();

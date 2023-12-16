@@ -1,5 +1,5 @@
 export function wiperFromSchema(schema) {
-    const tables = new Set(["overlord"]);
+    const tables = new Set(["core"]);
 
     for (const [n, x] of Object.entries(schema.properties)) {
         if (x.type == "string") {
@@ -12,7 +12,7 @@ export function wiperFromSchema(schema) {
     }
 
     return (project, asset, version) => {
-        let selector = "CREATE TEMP TABLE tmp_deleted AS SELECT _key FROM overlord WHERE _project = ?";
+        let selector = "CREATE TEMP TABLE tmp_deleted AS SELECT _key FROM core WHERE _project = ?";
         let params = [ project ];
 
         if (asset !== null) {

@@ -16,7 +16,7 @@ Each JSON schema is used to generate its a separate SQLite file that contains on
 
 ### File contents
 
-Each SQLite file contains a `primary` table.
+Each SQLite file contains a `core` table.
 Each row corresponds to an indexed object in **gypsum**.
 The table will have at least the following fields, all of which have the `TEXT` type:
 
@@ -37,7 +37,7 @@ The table contains at least the `_key` column (same as above), with one or more 
 If the items are booleans, integers, strings or numbers, the table contains exactly one `item` column of the corresponding type;
 if the items are objects, the table contains columns corresponding to the properties of the object.
 
-For `primary` and `multi_<FIELD>` tables, we generate an index for each column.
+For `core` and `multi_<FIELD>` tables, we generate an index for each column.
 Clients can perform most complex queries efficiently with the relevant inner joins.
 
 ### Table generation rules
@@ -45,9 +45,9 @@ Clients can perform most complex queries efficiently with the relevant inner joi
 Each JSON schema is used to generate a SQLite table according to some simple rules:
 
 - The schema must be a top-level `"type": "object"`.
-- An `integer` property is converted to an `INTEGER` field on the `primary` table.
-- A `boolean` property is converted to an `INTEGER` field on the `primary` table.
-- A `number` property is converted to a `REAL` field on the `primary` table. 
+- An `integer` property is converted to an `INTEGER` field on the `core` table.
+- A `boolean` property is converted to an `INTEGER` field on the `core` table.
+- A `number` property is converted to a `REAL` field on the `core` table. 
 - A `string` property is usually converted to a `TEXT` field.
   However, if its `_attributes` contain `"free_text"`, it will instead be converted into a column of `free_text`.
 - An `array` property is converted to a separate `multi_<FIELD>` table, where `<FIELD>` is the name of the property.

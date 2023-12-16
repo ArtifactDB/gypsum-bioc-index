@@ -9,7 +9,7 @@ test("initializerFromSchema works as expected", () => {
 
     let listing = db.pragma("table_list");
     let available = listing.filter(y => y.type == "table" || y.type == "virtual").map(y => y.name);
-    expect(available.indexOf("overlord") >= 0).toBe(true);
+    expect(available.indexOf("core") >= 0).toBe(true);
     expect(available.indexOf("free_text") >= 0).toBe(true);
     expect(available.indexOf("multi_sources") >= 0).toBe(true);
     expect(available.indexOf("multi_genome") >= 0).toBe(true);

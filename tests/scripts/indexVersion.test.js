@@ -18,9 +18,9 @@ test("indexAction works correctly", async () => {
     let statements = await indexVersion(project, asset, version, cv, cc);
 
     expect(statements.bioconductor.length).toBeGreaterThan(1);
-    expect(statements.bioconductor[0].statement).toMatch("overlord");
+    expect(statements.bioconductor[0].statement).toMatch("core");
     expect(statements.bioconductor[1].statement).toMatch("free_text");
 
     expect(statements.scRNAseq.length).toBeGreaterThan(0);
-    expect(statements.bioconductor[0].statement).toMatch("overlord");
+    expect(statements.bioconductor[0].statement).toMatch("core");
 })
