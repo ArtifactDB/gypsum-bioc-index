@@ -1,5 +1,4 @@
 import * as ls from "../src/listAllProjects.js";
-import "isomorphic-fetch";
 
 test("listAllProjects works as expected", async () => {
     let contents = await ls.listAllProjects();

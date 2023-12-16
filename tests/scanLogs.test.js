@@ -1,5 +1,4 @@
 import * as sc from "../src/scanLogs.js";
-import "isomorphic-fetch";
 
 test("scanLogs works as expected", async () => {
     let yesterday = new Date(Date.now() - 24 * 60 * 60 * 1000);

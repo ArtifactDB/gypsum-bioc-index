@@ -1,5 +1,4 @@
 import * as ff from "../src/fetchJson.js";
-import "isomorphic-fetch";
 
 test("fetchJson works as expected", async () => {
     let summ = await ff.fetchJson("test-R/basic/v1/..summary");

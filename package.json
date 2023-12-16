@@ -8,10 +8,9 @@
   "main": "src/index.js",
   "license": "MIT",
   "scripts": {
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --testTimeout=100000"
+    "test": "NODE_OPTIONS='--experimental-vm-modules --experimental-fetch' npx jest --testTimeout=100000"
   },
   "devDependencies": {
-    "isomorphic-fetch": "^3.0.0",
     "jest": "^29.3.1"
   },
   "dependencies": {

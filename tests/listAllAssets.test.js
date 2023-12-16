@@ -1,5 +1,4 @@
 import * as ls from "../src/listAllAssets.js";
-import "isomorphic-fetch";
 
 test("listAllAssets works as expected", async () => {
     let contents = await ls.listAllAssets("test-R");
