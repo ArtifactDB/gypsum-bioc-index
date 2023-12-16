@@ -1,6 +1,5 @@
 import * as ls from "../src/listVersionFiles.js";
 import { quickList } from "../src/utils.js";
-import "isomorphic-fetch";
 
 test("listVersionFiles works as expected", async () => {
     let contents = await ls.listVersionFiles("test-R", "basic", "v1");
