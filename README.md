@@ -66,7 +66,7 @@ These expect to have a modestly recent version of Node.js (tested on 16.19.1) an
 
 ### Creating new files
 
-The [`fresh.js`](script/fresh.js) script will generate one SQLite file corresponding to each JSON schema.
+The [`fresh.js`](scripts/fresh.js) script will generate one SQLite file corresponding to each JSON schema.
 This is done by listing all projects and assets in the **gypsum** backend,
 identifying the latest version of each asset,
 extracting metadata for objects in the latest version,
