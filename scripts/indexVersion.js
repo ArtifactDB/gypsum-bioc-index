@@ -72,15 +72,22 @@ export async function indexVersion(project, asset, version, validators, converte
     // scRNAseq indexing section:
     if (project == "scRNAseq") {
         let se_paths = [];
+        let nrows = [];
+        let ncols = [];
         let altexp_names = [];
         let reddim_names = [];
         let assay_names = [];
 
         for (var i = 0; i < bioc_meta.length; i++) {
-            let obj_type = bioc_objects[i].type;
+            let curobj = bioc_objects[i];
+            let obj_type = curobj.type;
+
             if (obj_type.endsWith("_experiment")) {
                 let bpath = bioc_paths[i];
                 se_paths.push(bpath);
+                let dim = curobj.summarized_experiment.dimensions;
+                nrows.push(dim[0]);
+                ncols.push(dim[1]);
                 reddim_names.push(gbi.fetchJson(bpath + "/reduced_dimensions/names.json", { mustWork: false }));
                 altexp_names.push(gbi.fetchJson(bpath + "/alternative_experiments/names.json", { mustWork: false }));
                 assay_names.push(gbi.fetchJson(bpath + "/assays/names.json", { mustWork: false }));
@@ -94,7 +101,10 @@ export async function indexVersion(project, asset, version, validators, converte
         let converter = converters["scRNAseq"];
         let statements = [];
         for (var i = 0; i < se_paths.length; i++) {
-            let meta = {};
+            let meta = { 
+                nrow: nrows[i], 
+                ncol: ncols[i] 
+            };
             if (assay_names[i] !== null) {
                 meta.assays = assay_names[i];
             }

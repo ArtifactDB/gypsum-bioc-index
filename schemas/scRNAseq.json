@@ -5,7 +5,17 @@
     "title": "scRNAseq metadata standards",
 
     "properties": {
-        "assays": {
+        "nrow": {
+            "type": "integer",
+            "description": "Number of rows."
+        },
+
+        "ncol": {
+            "type": "integer",
+            "description": "Number of columns."
+        },
+
+        "assay_names": {
             "type": "array",
             "description": "Names for assays.",
             "items": {
@@ -13,7 +23,7 @@
             }
         },
 
-        "reduced_dimensions": {
+        "reduced_dimension_names": {
             "type": "array",
             "description": "Names for reduced dimensions.",
             "items": {
@@ -21,7 +31,7 @@
             }
         },
 
-        "alternative_experiments": {
+        "alternative_experiment_names": {
             "type": "array",
             "description": "Names for alternative experiments.",
             "items": {
@@ -30,5 +40,6 @@
         }
     },
 
+    "required": [ "nrow", "ncol" ],
     "additionalProperties": false
 }
