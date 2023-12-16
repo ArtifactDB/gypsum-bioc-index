@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as path from "path";
+import * as gbi from "../src/index.js";
 
 export function loadSchemas(dir) {
     let output = {};

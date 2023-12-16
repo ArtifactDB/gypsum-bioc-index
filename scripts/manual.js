@@ -2,9 +2,11 @@ import * as gbi from "../src/index.js";
 import { parseArgs } from "node:util";
 import { handleAction } from "./handleAction.js";
 import { loadSchemas } from "./loadSchemas.js";
+import { createFromSchemas } from "./createFromSchemas.js";
+import { openSqlHandles } from "./openSqlHandles.js";
+import { closeSqlHandles } from "./closeSqlHandles.js";
 import * as fs from "fs";
 import * as path from "path";
-import Database from "better-sqlite3"
 
 const args = parseArgs({
     options: {
@@ -72,22 +74,10 @@ if (args.values.type == "add-version" || args.values.type == "delete-version") {
 }
 
 const schemas = loadSchemas(args.values.schemas);
-let validators = {};
-let converters = {};
-let wipers = {};
-for (const [id, schema] of Object.entries(schemas)) {
-    validators[id] = gbi.validatorFromSchema(schema);
-    wipers[id] = gbi.wiperFromSchema(schema);
-    converters[id] = gbi.converterFromSchema(schema);
-}
+let validators = createFromSchemas(schemas, gbi.validatorFromSchema);
+let converters = createFromSchemas(schemas, gbi.converterFromSchema);
+let wipers = createFromSchemas(schemas, gbi.wiperFromSchema);
 
-let handles = {};
-for (const id of Object.keys(schemas)) {
-    handles[id] = new Database(path.join(args.values.dir, id + ".sqlite3"))
-}
-
+let handles = openSqlHandles(args.values.dir, Object.keys(schemas));
 await handleAction(action, handles, wipers, validators, converters);
-
-for (const v of Object.values(handles)) {
-    v.close();
-}
+closeSqlHandles(handles);

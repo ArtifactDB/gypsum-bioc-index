@@ -2,6 +2,9 @@ import * as gbi from "../src/index.js";
 import { parseArgs } from "node:util";
 import { handleAction } from "./handleAction.js";
 import { loadSchemas } from "./loadSchemas.js";
+import { createFromSchemas } from "./createFromSchemas.js";
+import { openSqlHandles } from "./openSqlHandles.js";
+import { closeSqlHandles } from "./closeSqlHandles.js";
 import * as fs from "fs";
 import * as path from "path";
 import Database from "better-sqlite3"
@@ -24,19 +27,11 @@ const args = parseArgs({
 let lastmod = new Date(Number(fs.readFileSync(path.join(args.values.dir, "modified"))));
 
 const schemas = loadSchemas(args.values.schemas);
-let validators = {};
-let converters = {};
-let wipers = {};
-for (const [id, schema] of Object.entries(schemas)) {
-    validators[id] = gbi.validatorFromSchema(schema);
-    wipers[id] = gbi.wiperFromSchema(schema);
-    converters[id] = gbi.converterFromSchema(schema);
-}
+let validators = createFromSchemas(schemas, gbi.validatorFromSchema);
+let converters = createFromSchemas(schemas, gbi.converterFromSchema);
+let wipers = createFromSchemas(schemas, gbi.wiperFromSchema);
 
-let handles = {};
-for (const id of Object.keys(schemas)) {
-    handles[id] = new Database(path.join(args.values.dir, id + ".sqlite3"))
-}
+let handles = openSqlHandles(args.values.dir, Object.keys(schemas));
 
 let all_logs = await gbi.scanLogs(lastmod);
 let resolved_logs = await Promise.all(all_logs.map(x => gbi.fetchJson(x.key)));
@@ -45,13 +40,12 @@ let resolved_logs = await Promise.all(all_logs.map(x => gbi.fetchJson(x.key)));
 for (var i = 0; i < resolved_logs.length; i++) {
     let action = resolved_logs[i];
     console.log("[STATUS] processing log '" + all_logs[i] + "' (type: " + action.type + ")");
-    handleAction(action, handles, wipers, validators, converters);
+    await handleAction(action, handles, wipers, validators, converters);
 }
 
-for (const v of Object.values(handles)) {
-    v.close();
-}
+closeSqlHandles(handles);
 
+// Storing the timestamp of the last processed job.
 if (all_logs.length) {
     let last_event = 0;
     for (const x of all_logs) {

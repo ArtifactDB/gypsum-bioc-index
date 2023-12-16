@@ -1,10 +1,12 @@
 import * as gbi from "../src/index.js";
 import { indexVersion } from "./indexVersion.js";
 import { loadSchemas } from "./loadSchemas.js";
+import { createFromSchemas } from "./createFromSchemas.js";
+import { openSqlHandles } from "./openSqlHandles.js";
+import { closeSqlHandles } from "./closeSqlHandles.js";
 import { parseArgs } from "node:util";
 import * as path from "path";
 import * as fs from "fs";
-import Database from "better-sqlite3"
 
 const args = parseArgs({
     options: {
@@ -35,23 +37,13 @@ const args = parseArgs({
 });
 
 const schemas = loadSchemas(args.values.schemas);
-let validators = {};
-let converters = {};
-for (const [id, schema] of Object.entries(schemas)) {
-    validators[id] = gbi.validatorFromSchema(schema);
-    converters[id] = gbi.converterFromSchema(schema);
-}
+let validators = createFromSchemas(schemas, gbi.validatorFromSchema);
+let converters = createFromSchemas(schemas, gbi.converterFromSchema);
 
-let outputs = {};
-for (const [id, schema] of Object.entries(schemas)) {
-    let opath = path.join(args.values.outputs, id + ".sqlite3")
-    if (fs.existsSync(opath) && args.values.overwrite) {
-        fs.unlinkSync(opath);
-    }
-    let db = new Database(opath);
-    let init_cmds = gbi.initializeFromSchema(schema);
+let outputs = openSqlHandles(args.values.outputs, Object.keys(schemas), { overwrite: args.values.overwrite });
+for (const [id, db] of Object.entries(outputs)) {
+    let init_cmds = gbi.initializeFromSchema(schemas[id]);
     db.exec(init_cmds);
-    outputs[id] = db;
 }
 
 // Creating the timestamp here, just so that if there are any operations
@@ -106,8 +98,4 @@ for (const proj of all_projects) {
     }
 }
 
-for (const v of Object.values(outputs)) {
-    v.close();
-}
-
-
+closeSqlHandles(outputs);
