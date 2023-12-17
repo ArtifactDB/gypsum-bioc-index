@@ -1,0 +1,50 @@
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch:
+
+name: Update indices
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Restore the node modules
+      uses: actions/cache@v3
+      with:
+        path: '**/node_modules'
+        key: modules-${{ hashFiles('**/package.json') }}
+
+    - name: Install packages
+      run: npm i --include-dev
+
+    - name: Download SQLite files
+      uses: robinraju/release-downloader@v1.8
+      with:
+        latest: true
+        fileName: "*"
+        out-file-path: "indices"
+
+    - name: Update indices
+      id: updator
+      run: |
+        OLDSTAMP=$(cat indices/modified)
+        node scripts/update.js -d indices
+        NEWSTAMP=$(cat indices/modified)
+        CHANGED=$(($NEWSTAMP == $OLDSTAMP))
+        echo "modified=CHANGED" >> "$GITHUB_OUTPUT"
+
+    - name: Publishing files
+      uses: softprops/action-gh-release@v1
+      if: ${{ steps.updator.outputs.modified == '1' }}
+      with:
+        name: Latest build
+        tag_name: latest
+        files: indices/**
