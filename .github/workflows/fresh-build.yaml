@@ -1,0 +1,36 @@
+on:
+  workflow_dispatch:
+
+name: Fresh build
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: 20
+
+    - name: Restore the node modules
+      uses: actions/cache@v3
+      with:
+        path: '**/node_modules'
+        key: modules-${{ hashFiles('**/package.json') }}
+
+    - name: Install packages
+      run: npm i --include-dev
+
+    - name: Perform a fresh build
+      run: |
+        mkdir output
+        node scripts/fresh.js -o output -x whee
+
+    - name: Publishing files
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Latest build
+        tag_name: latest
+        files: outputs/**
