@@ -1,13 +1,13 @@
-# Search indices for gypsum
+# SQLite databases for gypsum metadata
 
-[![RunTests](https://github.com/ArtifactDB/gypsum-bioc-index/actions/workflows/run-tests.yaml/badge.svg)](https://github.com/ArtifactDB/gypsum-bioc-index/actions/workflows/run-tests.yaml)
-[![Updates](https://github.com/ArtifactDB/gypsum-bioc-index/actions/workflows/update-indices.yaml/badge.svg)](https://github.com/ArtifactDB/gypsum-bioc-index/actions/workflows/update-indices.yaml)
+[![RunTests](https://github.com/ArtifactDB/gypsum-to-sqlite/actions/workflows/run-tests.yaml/badge.svg)](https://github.com/ArtifactDB/gypsum-to-sqlite/actions/workflows/run-tests.yaml)
+[![Updates](https://github.com/ArtifactDB/gypsum-to-sqlite/actions/workflows/update-indices.yaml/badge.svg)](https://github.com/ArtifactDB/gypsum-to-sqlite/actions/workflows/update-indices.yaml)
 
 ## Overview 
 
 This repository contains schemas and code to generate SQLite files from metadata in the [**gypsum** backend](https://github.com/ArtifactDB/gypsum-worker).
-These SQLite files can then be used in client-side searches to find interesting objects for further analysis.
-We construct new indices by fetching metadata and converting them into records on one or more tables based on the corresponding schema specification;
+The SQLite files can then be used in client-side searches to find interesting objects for further analysis.
+We construct new indices by fetching metadata and converting them into records on one or more tables based on a JSON schema specification;
 existing indices are updated by routinely scanning the [logs](https://github.com/ArtifactDB/gypsum-worker#parsing-logs) for new or deleted content.
 
 This document is intended for system administrators or the occasional developer who wants to create a new search index for their package(s).
@@ -179,11 +179,11 @@ The script has the following options:
 
 The various GitHub Actions in this repository will publish the SQLite files as release assets.
 
-- The [`fresh-build` Action](https://github.com/ArtifactDB/gypsum-bioc-index/actions/workflows/fresh-build.yaml) will run the `fresh.js` script to create and publish a fresh build.
+- The [`fresh-build` Action](https://github.com/ArtifactDB/gypsum-to-sqlite/actions/workflows/fresh-build.yaml) will run the `fresh.js` script to create and publish a fresh build.
   This is manually triggered and can be used on the rare occasions where the existing release is irrecoverably out of sync with the **gypsum** bucket.
-- The [`update-indices` Action](https://github.com/ArtifactDB/gypsum-bioc-index/actions/workflows/update-indices.yaml) runs the `update.js` script daily to match changes to the bucket contents.
+- The [`update-indices` Action](https://github.com/ArtifactDB/gypsum-to-sqlite/actions/workflows/update-indices.yaml) runs the `update.js` script daily to match changes to the bucket contents.
   This will only publish a new release if any changes were performed.
   - Note that cron jobs in GitHub Actions require some semi-routine nudging to indicate that the repository is still active, otherwise the workflow is disabled.
 
-The latest version of the SQLite files are available [here](https://github.com/ArtifactDB/gypsum-bioc-index/releases/tag/latest).
+The latest version of the SQLite files are available [here](https://github.com/ArtifactDB/gypsum-to-sqlite/releases/tag/latest).
 Clients can check the `modified` file to determine when the files were last updated (and whether local caches need to be refreshed).

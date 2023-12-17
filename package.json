@@ -1,6 +1,6 @@
 {
   "private": true,
-  "name": "gypsum-bioc-index",
+  "name": "gypsum-to-sqlite",
   "version": "1.0.0",
   "type": "module",
   "description": "Index for Bioconductor-related metadata in gypsum backends",
