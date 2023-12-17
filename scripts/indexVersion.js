@@ -106,13 +106,13 @@ export async function indexVersion(project, asset, version, validators, converte
                 ncol: ncols[i] 
             };
             if (assay_names[i] !== null) {
-                meta.assays = assay_names[i];
+                meta.assay_names = assay_names[i];
             }
             if (reddim_names[i] !== null) {
-                meta.reduced_dimensions = reddim_names[i];
+                meta.reduced_dimension_names = reddim_names[i];
             }
             if (altexp_names[i] !== null) {
-                meta.alternative_experiments = altexp_names[i];
+                meta.alternative_experiment_names = altexp_names[i];
             }
             let converted = converter(project, asset, version, bioc_paths[i], bioc_objects[i].type, meta);
             for (const x of converted) {
