@@ -1,5 +1,8 @@
 # Search indices for gypsum
 
+[![RunTests](https://github.com/ArtifactDB/gypsum-bioc-index/actions/workflows/run-tests.yaml/badge.svg)](https://github.com/ArtifactDB/gypsum-bioc-index/actions/workflows/run-tests.yaml)
+[![Updates](https://github.com/ArtifactDB/gypsum-bioc-index/actions/workflows/update-indices.yaml/badge.svg)](https://github.com/ArtifactDB/gypsum-bioc-index/actions/workflows/update-indices.yaml)
+
 ## Overview 
 
 This repository contains schemas and code to generate SQLite files from metadata in the [**gypsum** backend](https://github.com/ArtifactDB/gypsum-worker).
@@ -7,11 +10,16 @@ These SQLite files can then be used in client-side searches to find interesting 
 We construct new indices by fetching metadata and converting them into records on one or more tables based on the corresponding schema specification;
 existing indices are updated by routinely scanning the [logs](https://github.com/ArtifactDB/gypsum-worker#parsing-logs) for new or deleted content.
 
-## Schema specification
+This document is intended for system administrators or the occasional developer who wants to create a new search index for their package(s).
+Users should not have to interact with these indices directly, as this should be mediated by client packages in relevant frameworks like R/Bioconductor.
+For example, the [gypsum R client](https://github.com/ArtifactDB/gypsum-R) provides functions for obtaining the schemas and indices,
+which are then called by more user-facing packages like the [scRNAseq](https://github.com/LTLA/scRNAseq) R package.
+
+## From JSON schemas to SQLite
 
 We expect that the metadata for any **gypsum** object can be represented as JSON, which allows for fairly complex metadata fields.
 The expectations for the metadata are described by [JSON schemas](https://json-schema.org) - readers can find some examples in the [schemas/](schemas/) subdirectory.
-The scripts in this repository uses the JSON schemas to automtically initialize SQLite tables and to convert JSON metadata into table rows.
+The scripts in this repository use the JSON schemas to automtically initialize SQLite tables and to convert JSON metadata into table rows.
 Each JSON schema is used to generate its a separate SQLite file that contains one or more tables depending on the schema's complexity.
 
 ### File contents
@@ -59,7 +67,21 @@ Each JSON schema is used to generate a SQLite table according to some simple rul
   Schema authors should flatten their objects for table generation.
 - Properties should not start with an underscore, as these are reserved for special use.
 
-## Script documentation
+### Adding new schemas
+
+Package developers with objects stored in the **gypsum** backend may wish to create custom SQLite files to enable package-specific searches.
+This can be easily done by adding or modifying files in a few locations:
+
+- Add a new JSON schema to [`schemas/`](schemas/).
+  This file's name should have the `.json` file extension and should not contain any whitespace.
+  - It is also recommended to add some tests to [`tests/schemas`](tests/schemas) to ensure that the schema behaves as expected.
+- Modify the [`scripts/indexVersion.js`](scripts/indexVersion.js) file to gather metadata from the **gypsum** backend into a JSON object.
+  This should only involve fetching and parsing some small files from the bucket;
+  package developers should consider computing any complex metadata before or during the original upload to the bucket.
+
+Once a new schema is added, the code in this repository will automatically create and update a SQLite file corresponding to the new schema.
+
+## SQLite file generation and editing
 
 The [`scripts/`](scripts/) subdirectory contains several scripts for generating and updating the SQLite files.
 These expect to have a modestly recent version of Node.js (tested on 16.19.1) and required dependencies can be installed with the usual `npm install` process.
@@ -152,3 +174,16 @@ The script has the following options:
   This is a required argument for `add-version` and `delete-version`.
 - `-l`, `--latest`: boolean indicating whether the specified version is the latest of its asset.
   This is a required argument for `add-version` and `delete-version`.
+
+## Publishing SQLite files
+
+The various GitHub Actions in this repository will publish the SQLite files as release assets.
+
+- The [`fresh-build` Action](https://github.com/ArtifactDB/gypsum-bioc-index/actions/workflows/fresh-build.yaml) will run the `fresh.js` script to create and publish a fresh build.
+  This is manually triggered and can be used on the rare occasions where the existing release is irrecoverably out of sync with the **gypsum** bucket.
+- The [`update-indices` Action](https://github.com/ArtifactDB/gypsum-bioc-index/actions/workflows/update-indices.yaml) runs the `update.js` script daily to match changes to the bucket contents.
+  This will only publish a new release if any changes were performed.
+  - Note that cron jobs in GitHub Actions require some semi-routine nudging to indicate that the repository is still active, otherwise the workflow is disabled.
+
+The latest version of the SQLite files are available [here](https://github.com/ArtifactDB/gypsum-bioc-index/releases/tag/latest).
+Clients can check the `modified` file to determine when the files were last updated (and whether local caches need to be refreshed).
