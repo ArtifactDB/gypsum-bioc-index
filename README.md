@@ -33,6 +33,7 @@ The table will have at least the following fields, all of which have the `TEXT` 
 - `_asset`: the name of the asset.
 - `_version`: the name of the version.
 - `_path`: the path to the object inside this versioned asset.
+  This is only supplied if the object is located inside a subdirectory of the asset, otherwise it is set to `null`.
 - `_object`: the object type.
 
 The SQLite file may contain a `free_text` virtual FTS5 table where each row corresponds to an indexed **gypsum** object.

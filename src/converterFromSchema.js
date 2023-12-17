@@ -26,12 +26,20 @@ export function converterFromSchema(schema) {
     }
 
     return (project, asset, version, path, object, metadata) => {
-        let key = project + '/' + asset + '/' + version + '/' + path;
+        let key = project + '/' + asset + '/' + version;
+        if (path !== null) {
+            key += '/' + path;
+        }
         const statements = [];
 
         {
-            let current_values = [key, project, asset, version, path, object];
-            let current_columns = ["_key", "_project", "_asset", "_version", "_path", "_object"];
+            let current_values = [key, project, asset, version, object];
+            let current_columns = ["_key", "_project", "_asset", "_version", "_object"];
+            if (path !== null) {
+                current_values.push(path);
+                current_columns.push("_path");
+            }
+
             for (const y of core_inserts) {
                 if (y in metadata) {
                     current_columns.push(y);

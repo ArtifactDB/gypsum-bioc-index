@@ -5,7 +5,8 @@ export async function indexVersion(project, asset, version, validators, converte
     let output = {};
 
     // BIOCONDUCTOR indexing section:
-    let bioc_paths = [];
+    let bioc_full_paths = [];
+    let bioc_relative_paths = [];
     let bioc_meta = [];
     let bioc_objects = [];
 
@@ -32,15 +33,24 @@ export async function indexVersion(project, asset, version, validators, converte
             }
         }
 
+        const prefix = project + "/" + asset + "/" + version;
         let meta_contents = [];
         let obj_contents = [];
         for (const [k, v] of Object.entries(candidates)) {
             if (!(v.bioconductor) || !(v.object)) {
                 continue;
             }
-            bioc_paths.push(k);
+
+            bioc_full_paths.push(k);
             meta_contents.push(gbi.fetchJson(k + "/_bioconductor.json"));
             obj_contents.push(gbi.fetchJson(k + "/OBJECT"));
+
+            // Stripping the path down to its relative component from the prefix.
+            let relative_path = null;
+            if (k != prefix) {
+                relative_path = k.slice(prefix.length + 1);
+            }
+            bioc_relative_paths.push(relative_path);
        }
 
         bioc_meta = await Promise.all(meta_contents);
@@ -51,7 +61,8 @@ export async function indexVersion(project, asset, version, validators, converte
         let validator = validators["bioconductor"];
 
         for (var i = 0; i < bioc_meta.length; i++) {
-            let bp = bioc_paths[i];
+            let bfp = bioc_full_paths[i];
+            let brp = bioc_relative_paths[i];
             let bm = bioc_meta[i];
 
             try {
@@ -60,7 +71,7 @@ export async function indexVersion(project, asset, version, validators, converte
                 throw new Error("failed to validate metadata at '" + bp + "'; " + e.message);
             }
 
-            let converted = converter(project, asset, version, bp, bioc_objects[i].type, bm);
+            let converted = converter(project, asset, version, brp, bioc_objects[i].type, bm);
             for (const x of converted) {
                 statements.push(x);
             }
@@ -71,23 +82,15 @@ export async function indexVersion(project, asset, version, validators, converte
 
     // scRNAseq indexing section:
     if (project == "scRNAseq") {
-        let se_paths = [];
-        let nrows = [];
-        let ncols = [];
+        let used = [];
         let altexp_names = [];
         let reddim_names = [];
         let assay_names = [];
 
         for (var i = 0; i < bioc_meta.length; i++) {
-            let curobj = bioc_objects[i];
-            let obj_type = curobj.type;
-
-            if (obj_type.endsWith("_experiment")) {
-                let bpath = bioc_paths[i];
-                se_paths.push(bpath);
-                let dim = curobj.summarized_experiment.dimensions;
-                nrows.push(dim[0]);
-                ncols.push(dim[1]);
+            if (bioc_objects[i].type.endsWith("_experiment")) {
+                used.push(i);
+                let bpath = bioc_full_paths[i];
                 reddim_names.push(gbi.fetchJson(bpath + "/reduced_dimensions/names.json", { mustWork: false }));
                 altexp_names.push(gbi.fetchJson(bpath + "/alternative_experiments/names.json", { mustWork: false }));
                 assay_names.push(gbi.fetchJson(bpath + "/assays/names.json", { mustWork: false }));
@@ -100,11 +103,12 @@ export async function indexVersion(project, asset, version, validators, converte
 
         let converter = converters["scRNAseq"];
         let statements = [];
-        for (var i = 0; i < se_paths.length; i++) {
-            let meta = { 
-                nrow: nrows[i], 
-                ncol: ncols[i] 
-            };
+        for (var i = 0; i < used.length; i++) {
+            let u = used[i];
+            let curobj = bioc_objects[u]
+            let dim = curobj.summarized_experiment.dimensions;
+            let meta = { nrow: dim[0], ncol: dim[1] };
+
             if (assay_names[i] !== null) {
                 meta.assay_names = assay_names[i];
             }
@@ -114,7 +118,8 @@ export async function indexVersion(project, asset, version, validators, converte
             if (altexp_names[i] !== null) {
                 meta.alternative_experiment_names = altexp_names[i];
             }
-            let converted = converter(project, asset, version, bioc_paths[i], bioc_objects[i].type, meta);
+
+            let converted = converter(project, asset, version, bioc_relative_paths[u], curobj.type, meta);
             for (const x of converted) {
                 statements.push(x);
             }
