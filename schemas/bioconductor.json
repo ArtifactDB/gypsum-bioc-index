@@ -40,7 +40,9 @@
                 "enum": [ 
                     "GRCm38", 
                     "GRCm39",
+                    "GRCh37", 
                     "GRCh38", 
+                    "GRCh39", 
                     "TAIR10", 
                     "CanFam3.1", 
                     "BDGP6",
