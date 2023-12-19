@@ -65,7 +65,7 @@
                     "provider": {
                         "type": "string",
                         "description": "Name of the data provider.",
-                        "enum": [ "GEO", "SRA", "ArrayExpress", "PubMed", "DOI", "other" ]
+                        "enum": [ "GEO", "SRA", "ArrayExpress", "PubMed", "ExperimentHub", "DOI", "other" ]
                     },
                     "id": {
                         "type": "string",
@@ -90,6 +90,10 @@
                     {
                         "if": { "properties": { "provider": { "const": "PubMed" } } },
                         "then": { "properties": { "id": { "type": "string", "pattern": "^[1-9][0-9]+$" } } }
+                    },
+                    {
+                        "if": { "properties": { "provider": { "const": "ExperimentHub" } } },
+                        "then": { "properties": { "id": { "type": "string", "pattern": "^EH[0-9]+$" } } }
                     },
                     {
                         "if": { "properties": { "provider": { "const": "DOI" } } },

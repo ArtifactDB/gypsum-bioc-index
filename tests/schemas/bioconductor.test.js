@@ -25,6 +25,7 @@ test("Bioconductor schema behaves as expected", () => {
             { provider: "ArrayExpress", id: "E-MTAB-12345" },
             { provider: "PubMed", id: "12332423" },
             { provider: "DOI", id: "123.13/231.23" },
+            { provider: "ExperimentHub", id: "EH12345" },
             { provider: "other", id: "https://123213.com" }
         ],
         maintainer_name: "Aaron Lun",
@@ -92,6 +93,8 @@ test("Bioconductor schema behaves as expected", () => {
     obj.sources = [{ provider: "ArrayExpress", id: "foo" }];
     expect(() => validate(obj)).toThrow("pattern");
     obj.sources = [{ provider: "PubMed", id: "foo" }];
+    expect(() => validate(obj)).toThrow("pattern");
+    obj.sources = [{ provider: "ExperimentHub", id: "foo" }];
     expect(() => validate(obj)).toThrow("pattern");
     obj.sources = [{ provider: "DOI", id: "foo" }];
     expect(() => validate(obj)).toThrow("pattern");
