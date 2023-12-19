@@ -32,6 +32,7 @@ export function wiperFromSchema(schema) {
             });
         }
 
+        statements.push({ statement: "DROP TABLE tmp_deleted", parameters: [] });
         return statements;
     };
 }
