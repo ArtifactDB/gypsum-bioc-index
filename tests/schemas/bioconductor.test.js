@@ -21,7 +21,9 @@ test("Bioconductor schema behaves as expected", () => {
         genome: [ "GRCm38" ],
         sources: [
             { provider: "GEO", id: "GSE12345" },
+            { provider: "GEO", id: "GSM12345" },
             { provider: "SRA", id: "SRP12345" },
+            { provider: "SRA", id: "SRR12345" },
             { provider: "ArrayExpress", id: "E-MTAB-12345" },
             { provider: "PubMed", id: "12332423" },
             { provider: "DOI", id: "123.13/231.23" },

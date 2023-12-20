@@ -77,11 +77,11 @@
                 "allOf": [
                     {
                         "if": { "properties": { "provider": { "const": "GEO" } } },
-                        "then": { "properties": { "id": { "type": "string", "pattern": "^GSE[0-9]+$" } } }
+                        "then": { "properties": { "id": { "type": "string", "pattern": "^GS[EM][0-9]+$" } } }
                     },
                     {
                         "if": { "properties": { "provider": { "const": "SRA" } } },
-                        "then": { "properties": { "id": { "type": "string", "pattern": "^SRP[0-9]+$" } } }
+                        "then": { "properties": { "id": { "type": "string", "pattern": "^SR[PR][0-9]+$" } } }
                     },
                     {
                         "if": { "properties": { "provider": { "const": "ArrayExpress" } } },
