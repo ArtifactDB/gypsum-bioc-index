@@ -38,7 +38,7 @@ jobs:
         OLDSTAMP=$(cat indices/modified)
         node scripts/update.js -d indices
         NEWSTAMP=$(cat indices/modified)
-        CHANGED=$(($NEWSTAMP == $OLDSTAMP))
+        CHANGED=$(($NEWSTAMP != $OLDSTAMP))
         echo "modified=CHANGED" >> "$GITHUB_OUTPUT"
 
     - name: Publishing files
