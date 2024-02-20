@@ -15,6 +15,6 @@
     "jest": "^29.3.1"
   },
   "dependencies": {
-    "stringy-sqlite-search": "github:ArtifactDB/stringy-sqlite-search"
+    "gypsum-metadata-index": "github:ArtifactDB/gypsum-metadata-index"
   }
 }
