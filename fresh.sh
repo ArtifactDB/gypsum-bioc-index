@@ -11,4 +11,4 @@ done
 
 rm -rf build
 mkdir build
-node --experimental-fetch stringy/scripts/fresh.js ${args} --gypsum https://gypsum.artifactdb.com --dir build
+NODE_OPTIONS='--experimental-fetch' npx --package=stringy-sqlite-search fresh ${args} --gypsum https://gypsum.artifactdb.com --dir build
