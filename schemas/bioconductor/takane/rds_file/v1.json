@@ -1,0 +1,21 @@
+{
+    "properties": {
+        "rds_file": {
+            "type": "object",
+
+            "title": "RDS file",
+            "description": "Information about a RDS file.",
+
+            "properties": {
+                "class": {
+                    "type": "string",
+                    "description": "Class of the R object in the RDS file."
+                }
+            },
+
+            "required": [ "class" ],
+
+            "additionalProperties": false
+        }
+    }
+}

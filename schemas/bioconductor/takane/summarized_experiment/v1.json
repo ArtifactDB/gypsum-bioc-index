@@ -1,0 +1,44 @@
+{
+    "properties": {
+        "summarized_experiment": {
+            "type": "object",
+
+            "title": "Summarized experiment",
+            "description": "Information about a summarized experiment object.",
+
+            "properties": {
+                "rows": {
+                    "type": "integer",
+                    "description": "Number of rows.",
+                    "minimum": 0
+                },
+
+                "columns": {
+                    "type": "integer",
+                    "description": "Number of columns.",
+                    "minimum": 0
+                },
+
+                "assays": {
+                    "type": "array",
+                    "description": "Names of the available assays.",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+
+                "column_annotations": {
+                    "type": "array",
+                    "description": "Names of the available column annotations.",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+
+            "required": [ "rows", "columns" ],
+
+            "additionalProperties": false
+        }
+    }
+}

@@ -15,6 +15,7 @@
     "jest": "^29.3.1"
   },
   "dependencies": {
-    "gypsum-metadata-index": "github:ArtifactDB/gypsum-metadata-index"
+    "gypsum-metadata-index": "github:ArtifactDB/gypsum-metadata-index",
+    "merge-json-schemas": "github:ArtifactDB/merge-json-schemas"
   }
 }
