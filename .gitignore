@@ -7,3 +7,5 @@ TEST_*
 .config/
 build/
 stringy
+merged/
+.DS_Store

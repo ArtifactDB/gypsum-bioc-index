@@ -30,5 +30,8 @@ jobs:
     - name: Install packages
       run: npm i --include-dev
 
+    - name: Create the merged schema
+      run: ./merge.sh
+
     - name: Run tests
       run: npm run test
