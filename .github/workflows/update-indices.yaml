@@ -3,7 +3,7 @@ on:
     - cron: '0 0 * * *'
   workflow_dispatch:
 
-name: Update indices
+name: Update builds
 
 jobs:
   build:
@@ -23,21 +23,21 @@ jobs:
         key: modules-${{ hashFiles('**/package.json') }}
 
     - name: Install packages
-      run: npm i --include-dev
+      run: npm i
 
     - name: Download SQLite files
       uses: robinraju/release-downloader@v1.8
       with:
         latest: true
         fileName: "*"
-        out-file-path: "indices"
+        out-file-path: "build"
 
-    - name: Update indices
+    - name: Update builds
       id: updator
       run: |
-        OLDSTAMP=$(cat indices/modified)
-        node scripts/update.js -d indices
-        NEWSTAMP=$(cat indices/modified)
+        OLDSTAMP=$(cat build/modified)
+        ./update.sh
+        NEWSTAMP=$(cat build/modified)
         CHANGED=$(($NEWSTAMP != $OLDSTAMP))
         echo "modified=CHANGED" >> "$GITHUB_OUTPUT"
 
@@ -47,4 +47,4 @@ jobs:
       with:
         name: Latest build
         tag_name: latest
-        files: indices/**
+        files: build/**

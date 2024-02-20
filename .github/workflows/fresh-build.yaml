@@ -21,16 +21,14 @@ jobs:
         key: modules-${{ hashFiles('**/package.json') }}
 
     - name: Install packages
-      run: npm i --include-dev
+      run: npm i
 
     - name: Perform a fresh build
-      run: |
-        mkdir output
-        node scripts/fresh.js -o output
+      run: ./fresh.sh 
 
     - name: Publishing files
       uses: softprops/action-gh-release@v1
       with:
         name: Latest build
         tag_name: latest
-        files: output/**
+        files: build/**
