@@ -20,7 +20,7 @@ which are then called by more user-facing packages like the [scRNAseq](https://g
 To be eligible for inclusion in this index, uploads should include one or more JSON-formatted metadata documents that are assigned to each project-asset-version combination.
 The name of the metadata document determines the database into which it is inserted, as well as the [JSON schema](https://json-schema.org) used for metadata validation:
 
-- Files named `_bioconductor.json` should validate against the [Bioconductor metadata schema](schemas/bioconductor/v1.json).
+- Files named `_bioconductor.json` should validate against the [Bioconductor metadata schema](https://artifactdb.github.io/bioconductor-metadata-index/bioconductor/v1.json).
   These are compiled into the `bioconductor.sqlite3` file.
 
 Package developers may open a [pull request](https://github.com/ArtifactDB/bioconductor-metadata-index) on this repository to add application-specific metadata.
@@ -33,7 +33,7 @@ This can involve either:
   but requires additional updates to [`fresh.sh`](fresh.sh) and [`update.sh`](update.sh) to build and update the new database.
 
 In general, we recommend breaking down large JSON schemas into smaller subschemas for easier development.
-We then use [merge-json-schemas](https://github.com/ArtifactDB/merge-json-schemas) to merge subschemas into the full Bioconductor schema, which is then published on GitHub Pages.
+We use [merge-json-schemas](https://github.com/ArtifactDB/merge-json-schemas) to merge subschemas into the full Bioconductor schema, which is then published on GitHub Pages.
 Developers adding entirely new schemas should udpate [`merge.sh`](merge.sh) to ensure these schemas are merged and published.
 
 ## Publishing SQLite files

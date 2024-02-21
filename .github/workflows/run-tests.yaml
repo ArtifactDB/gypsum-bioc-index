@@ -37,7 +37,7 @@ jobs:
       run: npm run test
 
     - name: Publish schemas
-      if: github.ref == 'ref/head/master'
+      if: github.ref == 'refs/heads/master'
       uses: JamesIves/github-pages-deploy-action@v4
       with:
         clean: false
