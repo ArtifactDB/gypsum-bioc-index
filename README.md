@@ -7,10 +7,10 @@
 
 This repository compiles metadata documents from the [**gypsum** backend](https://github.com/ArtifactDB/gypsum-worker) into a SQLite index,
 using scripts from the [gypsum-metadata-index](https://github.com/ArtifactDB/gypsum-metadata-index) repository.
-Applications can download these indices to query the metadata - either for specific fields, or in a full-text search - on the client machine.
+Applications can download these indices to extract the metadata and/or perform a range of queries including full-text searches.
 Check out the [relevant documentation](https://github.com/ArtifactDB/gypsum-metadata-index/blob/master/README.md) of the tables within each SQLite file.
 
-This document is intended for system administrators or the occasional developer who wants to create a new search index for their package(s).
+This document is intended for system administrators or the occasional developer who wants to create a new index for their package(s).
 Users should not have to interact with these indices directly, as this should be mediated by client packages in relevant frameworks like R/Bioconductor.
 For example, the [gypsum R client](https://github.com/ArtifactDB/gypsum-R) provides functions for obtaining the schemas and indices,
 which are then called by more user-facing packages like the [scRNAseq](https://github.com/LTLA/scRNAseq) R package.
@@ -33,7 +33,7 @@ This can involve either:
   but requires additional updates to [`fresh.sh`](fresh.sh) and [`update.sh`](update.sh) to build and update the new database.
 
 In general, we recommend breaking down large JSON schemas into smaller subschemas for easier development.
-We [merge-json-schemas](https://github.com/ArtifactDB/merge-json-schemas) to merge subschemas into the full Bioconductor schema, which is then published on GitHub Pages.
+We then use [merge-json-schemas](https://github.com/ArtifactDB/merge-json-schemas) to merge subschemas into the full Bioconductor schema, which is then published on GitHub Pages.
 Developers adding entirely new schemas should udpate [`merge.sh`](merge.sh) to ensure these schemas are merged and published.
 
 ## Publishing SQLite files
@@ -47,4 +47,5 @@ The various GitHub Actions in this repository will publish the SQLite files as r
   - Note that cron jobs in GitHub Actions require some semi-routine nudging to indicate that the repository is still active, otherwise the workflow is disabled.
 
 The latest version of the SQLite files are available [here](https://github.com/ArtifactDB/gypsum-to-sqlite/releases/tag/latest).
-Clients can check the `modified` file to determine when the files were last updated (and whether local caches need to be refreshed).
+The `modified` file contains the Unix timestamp for the last update of the files;
+clients can check this file to determine whether local caches need to be refreshed.
