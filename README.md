@@ -1,7 +1,7 @@
 # Bioconductor metadata index
 
-[![RunTests](https://github.com/ArtifactDB/gypsum-to-sqlite/actions/workflows/run-tests.yaml/badge.svg)](https://github.com/ArtifactDB/gypsum-to-sqlite/actions/workflows/run-tests.yaml)
-[![Updates](https://github.com/ArtifactDB/gypsum-to-sqlite/actions/workflows/update-indices.yaml/badge.svg)](https://github.com/ArtifactDB/gypsum-to-sqlite/actions/workflows/update-indices.yaml)
+[![RunTests](https://github.com/ArtifactDB/bioconductor-metadata-index/actions/workflows/run-tests.yaml/badge.svg)](https://github.com/ArtifactDB/bioconductor-metadata-index/actions/workflows/run-tests.yaml)
+[![Updates](https://github.com/ArtifactDB/bioconductor-metadata-index/actions/workflows/update-indices.yaml/badge.svg)](https://github.com/ArtifactDB/bioconductor-metadata-index/actions/workflows/update-indices.yaml)
 
 ## Overview
 
@@ -23,7 +23,7 @@ The name of the metadata document determines the database into which it is inser
 - Files named `_bioconductor.json` should validate against the [Bioconductor metadata schema](schemas/bioconductor/v1.json).
   These are compiled into the `bioconductor.sqlite3` file.
 
-Package developers may open a [pull request](https://github.com/ArtifactDB/gypsum-to-sqlite) on this repository to add application-specific metadata.
+Package developers may open a [pull request](https://github.com/ArtifactDB/bioconductor-metadata-index) on this repository to add application-specific metadata.
 This can involve either:
 
 - Adding an application-specific subschema to the `schemas/bioconductor/MY_APP_HERE` subdirectory.
@@ -40,12 +40,12 @@ Developers adding entirely new schemas should udpate [`merge.sh`](merge.sh) to e
 
 The various GitHub Actions in this repository will publish the SQLite files as release assets.
 
-- The [`fresh-build` Action](https://github.com/ArtifactDB/gypsum-to-sqlite/actions/workflows/fresh-build.yaml) will run the `fresh.sh` script to create and publish a fresh build.
+- The [`fresh-build` Action](https://github.com/ArtifactDB/bioconductor-metadata-index/actions/workflows/fresh-build.yaml) will run the `fresh.sh` script to create and publish a fresh build.
   This is manually triggered and can be used on the rare occasions where the existing release is irrecoverably out of sync with the **gypsum** bucket.
-- The [`update-indices` Action](https://github.com/ArtifactDB/gypsum-to-sqlite/actions/workflows/update-indices.yaml) runs the `update.sh` script daily to match changes to the bucket contents.
+- The [`update-indices` Action](https://github.com/ArtifactDB/bioconductor-metadata-index/actions/workflows/update-indices.yaml) runs the `update.sh` script daily to match changes to the bucket contents.
   This will only publish a new release if any changes were performed.
   - Note that cron jobs in GitHub Actions require some semi-routine nudging to indicate that the repository is still active, otherwise the workflow is disabled.
 
-The latest version of the SQLite files are available [here](https://github.com/ArtifactDB/gypsum-to-sqlite/releases/tag/latest).
+The latest version of the SQLite files are available [here](https://github.com/ArtifactDB/bioconductor-metadata-index/releases/tag/latest).
 The `modified` file contains the Unix timestamp for the last update of the files;
 clients can check this file to determine whether local caches need to be refreshed.
