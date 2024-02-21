@@ -3,7 +3,7 @@
   "name": "gypsum-to-sqlite",
   "version": "1.0.0",
   "type": "module",
-  "description": "Index for Bioconductor-related metadata in gypsum backends",
+  "description": "Index Bioconductor-related metadata from the gypsum backend",
   "author": "LTLA <infinite.monkeys.with.keyboards@gmail.com>",
   "main": "src/index.js",
   "license": "MIT",
