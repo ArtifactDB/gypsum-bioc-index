@@ -65,43 +65,84 @@
                 "properties": {
                     "provider": {
                         "type": "string",
-                        "description": "Name of the data provider.",
-                        "enum": [ "GEO", "SRA", "ArrayExpress", "PubMed", "ExperimentHub", "DOI", "other" ]
+                        "enum": [ 
+                            "GEO", 
+                            "SRA", 
+                            "ArrayExpress", 
+                            "PubMed", 
+                            "ExperimentHub", 
+                            "GitHub", 
+                            "DOI", 
+                            "URL"
+                        ],
+                        "_description": [
+                            "Name of the data provider.",
+                            "- `GEO`: Gene Expression Omnibus (NCBI). The `id` should be a GSE or GSM identifier.",
+                            "- `SRA`: Sequence Read Archive (NCBI). The `id` should be a SRR or SRP identifier.",
+                            "- `ArrayExpress`: ArrayExpress (EMBL-EBI). The `id` should be an E-MTAB identifier.",
+                            "- `PubMed`: PubMed (NIH). The `id` should be a PMID.",
+                            "- `ExperimentHub`: ExperimentHub (Bioconductor). The `id` should be an EH identifier.",
+                            "- `GitHub`: GitHub repository. The `id` should be the full name of the repository, including the owner.",
+                            "- `DOI`: a DOI to a remote resource. The `id` should be the DOI string (not a URL containing the DOI).",
+                            "- `URL`: a URL to a remote resource. The `id` should be a full URL string, including the initial `http`."
+                        ]
                     },
                     "id": {
                         "type": "string",
-                        "description": "Provider-specific identifier for the data source."
+                        "_description": [
+                            "Provider-specific identifier for the data source."
+                        ]
+                    },
+                    "version": {
+                        "type": "string",
+                        "_description": [
+                            "Provider-specific version, if the `id` is potentially mutable.",
+                            "- For GitHub, we recommend using a release tag or the commit hash.",
+                            "- For URLs, we recommend setting this to the date of accessing the URL."
+                        ]
                     }
                 },
                 "required": [ "provider", "id" ],
                 "additionalProperties": false,
+
                 "allOf": [
                     {
                         "if": { "properties": { "provider": { "const": "GEO" } } },
                         "then": { "properties": { "id": { "type": "string", "pattern": "^GS[EM][0-9]+$" } } }
                     },
+
                     {
                         "if": { "properties": { "provider": { "const": "SRA" } } },
                         "then": { "properties": { "id": { "type": "string", "pattern": "^SR[PR][0-9]+$" } } }
                     },
+
                     {
                         "if": { "properties": { "provider": { "const": "ArrayExpress" } } },
                         "then": { "properties": { "id": { "type": "string", "pattern": "^E-MTAB-[0-9]+$" } } }
                     },
+
                     {
                         "if": { "properties": { "provider": { "const": "PubMed" } } },
                         "then": { "properties": { "id": { "type": "string", "pattern": "^[1-9][0-9]+$" } } }
                     },
+
                     {
                         "if": { "properties": { "provider": { "const": "ExperimentHub" } } },
                         "then": { "properties": { "id": { "type": "string", "pattern": "^EH[0-9]+$" } } }
                     },
+
+                    {
+                        "if": { "properties": { "provider": { "const": "GitHub" } } },
+                        "then": { "properties": { "id": { "type": "string", "pattern": "[^/]/[^/]" } } }
+                    },
+
                     {
                         "if": { "properties": { "provider": { "const": "DOI" } } },
                         "then": { "properties": { "id": { "type": "string", "pattern": "^[a-zA-Z0-9\\.]+/[a-zA-Z0-9\\.]+$" } } }
                     },
+
                     {
-                        "if": { "properties": { "provider": { "const": "other" } } },
+                        "if": { "properties": { "provider": { "const": "URL" } } },
                         "then": { "properties": { "id": { "type": "string", "pattern": "^https?://[^\\s]+$" } } }
                     }
                 ]

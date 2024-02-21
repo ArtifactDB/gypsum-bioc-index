@@ -28,7 +28,8 @@ test("Bioconductor schema behaves as expected", () => {
             { provider: "PubMed", id: "12332423" },
             { provider: "DOI", id: "123.13/231.23" },
             { provider: "ExperimentHub", id: "EH12345" },
-            { provider: "other", id: "https://123213.com" }
+            { provider: "GitHub", id: "ArtifactDB/foobar", version: "v1" },
+            { provider: "URL", id: "https://123213.com", version: "2029-10-10" }
         ],
         maintainer_name: "Aaron Lun",
         maintainer_email: "aaron@aaron.com",
@@ -113,9 +114,11 @@ test("Bioconductor schema behaves as expected", () => {
     expect(() => validate(obj)).toThrow("pattern");
     obj.sources = [{ provider: "ExperimentHub", id: "foo" }];
     expect(() => validate(obj)).toThrow("pattern");
+    obj.sources = [{ provider: "GitHub", id: "foo" }];
+    expect(() => validate(obj)).toThrow("pattern");
     obj.sources = [{ provider: "DOI", id: "foo" }];
     expect(() => validate(obj)).toThrow("pattern");
-    obj.sources = [{ provider: "other", id: "foo" }];
+    obj.sources = [{ provider: "URL", id: "foo" }];
     expect(() => validate(obj)).toThrow("pattern");
     obj.sources = [{ provider: "random", id: "123123" }];
     expect(() => validate(obj)).toThrow("one of");
