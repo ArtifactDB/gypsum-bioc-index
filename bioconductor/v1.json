@@ -64,20 +64,25 @@
                 "properties": {
                     "provider": {
                         "type": "string",
-                        "description": "Name of the data provider.",
                         "enum": [
                             "GEO",
                             "SRA",
                             "ArrayExpress",
                             "PubMed",
                             "ExperimentHub",
+                            "GitHub",
                             "DOI",
-                            "other"
-                        ]
+                            "URL"
+                        ],
+                        "description": "Name of the data provider.\n- `GEO`: Gene Expression Omnibus (NCBI). The `id` should be a GSE or GSM identifier.\n- `SRA`: Sequence Read Archive (NCBI). The `id` should be a SRR or SRP identifier.\n- `ArrayExpress`: ArrayExpress (EMBL-EBI). The `id` should be an E-MTAB identifier.\n- `PubMed`: PubMed (NIH). The `id` should be a PMID.\n- `ExperimentHub`: ExperimentHub (Bioconductor). The `id` should be an EH identifier.\n- `GitHub`: GitHub repository. The `id` should be the full name of the repository, including the owner.\n- `DOI`: a DOI to a remote resource. The `id` should be the DOI string (not a URL containing the DOI).\n- `URL`: a URL to a remote resource. The `id` should be a full URL string, including the initial `http`."
                     },
                     "id": {
                         "type": "string",
                         "description": "Provider-specific identifier for the data source."
+                    },
+                    "version": {
+                        "type": "string",
+                        "description": "Provider-specific version, if the `id` is potentially mutable.\n- For GitHub, we recommend using a release tag or the commit hash.\n- For URLs, we recommend setting this to the date of accessing the URL."
                     }
                 },
                 "required": [
@@ -175,6 +180,23 @@
                         "if": {
                             "properties": {
                                 "provider": {
+                                    "const": "GitHub"
+                                }
+                            }
+                        },
+                        "then": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "pattern": "[^/]/[^/]"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "if": {
+                            "properties": {
+                                "provider": {
                                     "const": "DOI"
                                 }
                             }
@@ -192,7 +214,7 @@
                         "if": {
                             "properties": {
                                 "provider": {
-                                    "const": "other"
+                                    "const": "URL"
                                 }
                             }
                         },
