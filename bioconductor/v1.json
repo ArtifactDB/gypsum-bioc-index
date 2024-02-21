@@ -1,0 +1,450 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "bioconductor.json",
+    "type": "object",
+    "title": "Bioconductor metadata standards",
+    "properties": {
+        "title": {
+            "type": "string",
+            "description": "Title of the object.",
+            "_attributes": [
+                "free_text"
+            ]
+        },
+        "description": {
+            "type": "string",
+            "description": "Description of the object.",
+            "_attributes": [
+                "free_text"
+            ]
+        },
+        "bioconductor_version": {
+            "type": "string",
+            "description": "Version of Bioconductor used to generate the object.",
+            "pattern": "^[1-9][0-9]*\\.[1-9][0-9]*$"
+        },
+        "taxonomy_id": {
+            "type": "array",
+            "description": "NCBI taxonomy ID. Multiple entries may be supplied if multiple organisms are present.",
+            "items": {
+                "type": "string",
+                "pattern": "^[1-9][0-9]*$"
+            },
+            "uniqueItems": true
+        },
+        "genome": {
+            "type": "array",
+            "description": "Ensembl genome build identifiers. Multiple entries may be supplied if multiple organisms are present.",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "MGSCv37",
+                    "GRCm38",
+                    "GRCm39",
+                    "GRCh37",
+                    "GRCh38",
+                    "GRCh39",
+                    "TAIR10",
+                    "CanFam3.1",
+                    "BDGP6",
+                    "GRCz10",
+                    "GRCz11",
+                    "Rnor_5.0",
+                    "Rnor_6.0",
+                    "Xenla9.1"
+                ]
+            },
+            "uniqueItems": true
+        },
+        "sources": {
+            "type": "array",
+            "description": "Data sources for this object.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "provider": {
+                        "type": "string",
+                        "description": "Name of the data provider.",
+                        "enum": [
+                            "GEO",
+                            "SRA",
+                            "ArrayExpress",
+                            "PubMed",
+                            "ExperimentHub",
+                            "DOI",
+                            "other"
+                        ]
+                    },
+                    "id": {
+                        "type": "string",
+                        "description": "Provider-specific identifier for the data source."
+                    }
+                },
+                "required": [
+                    "provider",
+                    "id"
+                ],
+                "additionalProperties": false,
+                "allOf": [
+                    {
+                        "if": {
+                            "properties": {
+                                "provider": {
+                                    "const": "GEO"
+                                }
+                            }
+                        },
+                        "then": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "pattern": "^GS[EM][0-9]+$"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "if": {
+                            "properties": {
+                                "provider": {
+                                    "const": "SRA"
+                                }
+                            }
+                        },
+                        "then": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "pattern": "^SR[PR][0-9]+$"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "if": {
+                            "properties": {
+                                "provider": {
+                                    "const": "ArrayExpress"
+                                }
+                            }
+                        },
+                        "then": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "pattern": "^E-MTAB-[0-9]+$"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "if": {
+                            "properties": {
+                                "provider": {
+                                    "const": "PubMed"
+                                }
+                            }
+                        },
+                        "then": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "pattern": "^[1-9][0-9]+$"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "if": {
+                            "properties": {
+                                "provider": {
+                                    "const": "ExperimentHub"
+                                }
+                            }
+                        },
+                        "then": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "pattern": "^EH[0-9]+$"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "if": {
+                            "properties": {
+                                "provider": {
+                                    "const": "DOI"
+                                }
+                            }
+                        },
+                        "then": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "pattern": "^[a-zA-Z0-9\\.]+/[a-zA-Z0-9\\.]+$"
+                                }
+                            }
+                        }
+                    },
+                    {
+                        "if": {
+                            "properties": {
+                                "provider": {
+                                    "const": "other"
+                                }
+                            }
+                        },
+                        "then": {
+                            "properties": {
+                                "id": {
+                                    "type": "string",
+                                    "pattern": "^https?://[^\\s]+$"
+                                }
+                            }
+                        }
+                    }
+                ]
+            },
+            "minItems": 1
+        },
+        "maintainer_name": {
+            "type": "string",
+            "description": "Name of the maintainer. This should contain at least the first and last names separated by a space.",
+            "pattern": "^[^\\s]+(?: [^\\s]+)+$",
+            "_attributes": [
+                "free_text"
+            ]
+        },
+        "maintainer_email": {
+            "type": "string",
+            "description": "Email address of the maintainer.",
+            "pattern": "^[^@\\s]+@[^@\\.\\s]+\\.[^@\\s]+"
+        },
+        "applications": {
+            "type": "object",
+            "description": "Application-specific metadata.",
+            "properties": {
+                "takane": {
+                    "type": "object",
+                    "title": "takane object information",
+                    "description": "Information about the object, assuming that objects were saved according to a [**takane** specification](https://github.com/ArtifactDB/takane).",
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "description": "Type of the object, as specified in the `OBJECT` file."
+                        },
+                        "summarized_experiment": {
+                            "type": "object",
+                            "title": "Summarized experiment",
+                            "description": "Information about a summarized experiment object.",
+                            "properties": {
+                                "rows": {
+                                    "type": "integer",
+                                    "description": "Number of rows.",
+                                    "minimum": 0
+                                },
+                                "columns": {
+                                    "type": "integer",
+                                    "description": "Number of columns.",
+                                    "minimum": 0
+                                },
+                                "assays": {
+                                    "type": "array",
+                                    "description": "Names of the available assays.",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "column_annotations": {
+                                    "type": "array",
+                                    "description": "Names of the available column annotations.",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "required": [
+                                "rows",
+                                "columns"
+                            ],
+                            "additionalProperties": false
+                        },
+                        "single_cell_experiment": {
+                            "type": "object",
+                            "title": "Single cell experiment",
+                            "description": "Information about a single cell experiment object.",
+                            "properties": {
+                                "reduced_dimensions": {
+                                    "type": "array",
+                                    "description": "Names of the available reduced dimensions.",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                },
+                                "alternative_experiments": {
+                                    "type": "array",
+                                    "description": "Names of the available alternative experiments.",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "additionalProperties": false
+                        },
+                        "data_frame": {
+                            "type": "object",
+                            "title": "Data frame",
+                            "description": "Information about a data frame object.",
+                            "properties": {
+                                "rows": {
+                                    "type": "integer",
+                                    "description": "Number of rows.",
+                                    "minimum": 0
+                                },
+                                "column_names": {
+                                    "type": "array",
+                                    "description": "Names of the columns.",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "required": [
+                                "rows",
+                                "column_names"
+                            ],
+                            "additionalProperties": false
+                        },
+                        "rds_file": {
+                            "type": "object",
+                            "title": "RDS file",
+                            "description": "Information about a RDS file.",
+                            "properties": {
+                                "class": {
+                                    "type": "string",
+                                    "description": "Class of the R object in the RDS file."
+                                }
+                            },
+                            "required": [
+                                "class"
+                            ],
+                            "additionalProperties": false
+                        }
+                    },
+                    "additionalProperties": false,
+                    "allOf": [
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": {
+                                        "enum": [
+                                            "summarized_experiment",
+                                            "ranged_summarized_experiment",
+                                            "single_cell_experiment",
+                                            "spatial_experiment"
+                                        ]
+                                    }
+                                }
+                            },
+                            "then": {
+                                "required": [
+                                    "summarized_experiment"
+                                ]
+                            },
+                            "else": {
+                                "not": {
+                                    "required": [
+                                        "summarized_experiment"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": {
+                                        "enum": [
+                                            "single_cell_experiment",
+                                            "spatial_experiment"
+                                        ]
+                                    }
+                                }
+                            },
+                            "then": {
+                                "required": [
+                                    "single_cell_experiment"
+                                ]
+                            },
+                            "else": {
+                                "not": {
+                                    "required": [
+                                        "single_cell_experiment"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": {
+                                        "enum": [
+                                            "data_frame"
+                                        ]
+                                    }
+                                }
+                            },
+                            "then": {
+                                "required": [
+                                    "data_frame"
+                                ]
+                            },
+                            "else": {
+                                "not": {
+                                    "required": [
+                                        "data_frame"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "if": {
+                                "properties": {
+                                    "type": {
+                                        "enum": [
+                                            "rds_file"
+                                        ]
+                                    }
+                                }
+                            },
+                            "then": {
+                                "required": [
+                                    "rds_file"
+                                ]
+                            },
+                            "else": {
+                                "not": {
+                                    "required": [
+                                        "rds_file"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            }
+        }
+    },
+    "required": [
+        "title",
+        "description",
+        "bioconductor_version",
+        "taxonomy_id",
+        "genome",
+        "sources",
+        "maintainer_name",
+        "maintainer_email"
+    ],
+    "additionalProperties": false
+}
