@@ -1,0 +1,30 @@
+{
+    "properties": {
+        "single_cell_experiment": {
+            "type": "object",
+
+            "title": "Single cell experiment",
+            "description": "Information about a single cell experiment object.",
+
+            "properties": {
+                "reduced_dimensions": {
+                    "type": "array",
+                    "description": "Names of the available reduced dimensions.",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+
+                "alternative_experiments": {
+                    "type": "array",
+                    "description": "Names of the available alternative experiments.",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+
+            "additionalProperties": false
+        }
+    }
+}

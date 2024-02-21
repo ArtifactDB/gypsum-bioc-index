@@ -1,4 +1,4 @@
-import schema from "../schemas/bioconductor.json";
+import schema from "../../merged/bioconductor/v1.json";
 import Ajv from "ajv";
 
 test("Bioconductor schema behaves as expected", () => {
@@ -21,16 +21,35 @@ test("Bioconductor schema behaves as expected", () => {
         genome: [ "GRCm38" ],
         sources: [
             { provider: "GEO", id: "GSE12345" },
+            { provider: "GEO", id: "GSM12345" },
+            { provider: "SRA", id: "SRP12345" },
+            { provider: "SRA", id: "SRR12345" },
             { provider: "ArrayExpress", id: "E-MTAB-12345" },
             { provider: "PubMed", id: "12332423" },
             { provider: "DOI", id: "123.13/231.23" },
+            { provider: "ExperimentHub", id: "EH12345" },
             { provider: "other", id: "https://123213.com" }
         ],
         maintainer_name: "Aaron Lun",
-        maintainer_email: "aaron@aaron.com"
+        maintainer_email: "aaron@aaron.com",
+        applications: {
+            takane: {
+                type: "single_cell_experiment",
+                summarized_experiment: {
+                    rows: 20,
+                    columns: 10,
+                    assays: [ "counts", "logcounts" ]
+                },
+                single_cell_experiment: {
+                    reduced_dimensions: [ "UMAP", "TSNE", "PCA" ],
+                    alternative_experiments: [ "ERCC", "ADT" ]
+                }
+            }
+        }
     };
     validate(obj);
 
+    // Testing Bioconductor core:
     delete obj.title; 
     expect(() => validate(obj)).toThrow("title");
     obj.title = 2;
@@ -86,9 +105,13 @@ test("Bioconductor schema behaves as expected", () => {
 
     obj.sources = [{ provider: "GEO", id: "foo" }];
     expect(() => validate(obj)).toThrow("pattern");
+    obj.sources = [{ provider: "SRA", id: "foo" }];
+    expect(() => validate(obj)).toThrow("pattern");
     obj.sources = [{ provider: "ArrayExpress", id: "foo" }];
     expect(() => validate(obj)).toThrow("pattern");
     obj.sources = [{ provider: "PubMed", id: "foo" }];
+    expect(() => validate(obj)).toThrow("pattern");
+    obj.sources = [{ provider: "ExperimentHub", id: "foo" }];
     expect(() => validate(obj)).toThrow("pattern");
     obj.sources = [{ provider: "DOI", id: "foo" }];
     expect(() => validate(obj)).toThrow("pattern");
@@ -116,4 +139,42 @@ test("Bioconductor schema behaves as expected", () => {
     expect(() => validate(obj)).toThrow("pattern");
     obj.maintainer_email = "foobar.ccom";
     expect(() => validate(obj)).toThrow("pattern");
+    obj.maintainer_email = "foobar@c.com";
+
+    // Testing the takane SCE requirements.
+    delete obj.applications.takane.summarized_experiment.rows; 
+    expect(() => validate(obj)).toThrow("rows");
+    obj.applications.takane.summarized_experiment.rows = "ASdasd";
+    expect(() => validate(obj)).toThrow("integer");
+    obj.applications.takane.summarized_experiment.rows = 10;
+
+    delete obj.applications.takane.summarized_experiment.columns;
+    expect(() => validate(obj)).toThrow("columns");
+    obj.applications.takane.summarized_experiment.columns = "asdasd";
+    expect(() => validate(obj)).toThrow("integer");
+    obj.applications.takane.summarized_experiment.columns = 20;
+
+    delete obj.applications.takane.summarized_experiment.assays;
+    validate(obj);
+    obj.applications.takane.summarized_experiment.assays = 2;
+    expect(() => validate(obj)).toThrow("array");
+    obj.applications.takane.summarized_experiment.assays = [1];
+    expect(() => validate(obj)).toThrow("string");
+    obj.applications.takane.summarized_experiment.assays = [ "asdasd" ];
+
+    delete obj.applications.takane.single_cell_experiment.reduced_dimensions;
+    validate(obj);
+    obj.applications.takane.single_cell_experiment.reduced_dimensions = 2;
+    expect(() => validate(obj)).toThrow("array");
+    obj.applications.takane.single_cell_experiment.reduced_dimensions = [1];
+    expect(() => validate(obj)).toThrow("string");
+    obj.applications.takane.single_cell_experiment.reduced_dimensions = [ "asdasd" ];
+
+    delete obj.applications.takane.single_cell_experiment.alternative_experiments;
+    validate(obj);
+    obj.applications.takane.single_cell_experiment.alternative_experiments = 2;
+    expect(() => validate(obj)).toThrow("array");
+    obj.applications.takane.single_cell_experiment.alternative_experiments = [1];
+    expect(() => validate(obj)).toThrow("string");
+    obj.applications.takane.single_cell_experiment.alternative_experiments = [ "asdasd" ];
 })

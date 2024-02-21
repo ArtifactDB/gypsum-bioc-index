@@ -1,0 +1,30 @@
+{
+    "properties": {
+        "data_frame": {
+            "type": "object",
+
+            "title": "Data frame",
+            "description": "Information about a data frame object.",
+
+            "properties": {
+                "rows": {
+                    "type": "integer",
+                    "description": "Number of rows.",
+                    "minimum": 0
+                },
+
+                "column_names": {
+                    "type": "array",
+                    "description": "Names of the columns.",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+
+            "required": [ "rows", "column_names" ],
+
+            "additionalProperties": false
+        }
+    }
+}

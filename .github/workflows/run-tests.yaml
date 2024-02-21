@@ -14,10 +14,10 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set up Node
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v4
       with:
         node-version: 20
 
@@ -30,5 +30,16 @@ jobs:
     - name: Install packages
       run: npm i --include-dev
 
+    - name: Create the merged schema
+      run: ./merge.sh
+
     - name: Run tests
       run: npm run test
+
+    - name: Publish schemas
+      if: github.ref == 'ref/head/master'
+      uses: JamesIves/github-pages-deploy-action@v4
+      with:
+        clean: false
+        branch: gh-pages
+        folder: merged

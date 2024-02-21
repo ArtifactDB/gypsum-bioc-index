@@ -120,6 +120,14 @@
             "type": "string",
             "description": "Email address of the maintainer.",
             "pattern": "^[^@\\s]+@[^@\\.\\s]+\\.[^@\\s]+"
+        },
+
+        "applications": {
+            "type": "object",
+            "description": "Application-specific metadata.",
+            "allOf": [
+                { "$ref": "takane/v1.json" }
+            ]
         }
     },
 

@@ -1,0 +1,49 @@
+{
+    "properties": {
+        "takane": {
+            "type": "object",
+
+            "title": "takane object information",
+            "description": "Information about the object, assuming that objects were saved according to a [**takane** specification](https://github.com/ArtifactDB/takane).",
+
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "description": "Type of the object, as specified in the `OBJECT` file."
+                }
+            },
+
+            "allOf": [
+                { "$ref": "summarized_experiment/v1.json" },
+                { 
+                    "if": { "properties": { "type": { "enum": [ "summarized_experiment", "ranged_summarized_experiment", "single_cell_experiment", "spatial_experiment" ] } } },
+                    "then": { "required": [ "summarized_experiment" ] },
+                    "else": { "not": { "required": [ "summarized_experiment" ] } }
+                },
+
+                { "$ref": "single_cell_experiment/v1.json" },
+                { 
+                    "if": { "properties": { "type": { "enum": [ "single_cell_experiment", "spatial_experiment" ] } } },
+                    "then": { "required": [ "single_cell_experiment" ] },
+                    "else": { "not": { "required": [ "single_cell_experiment" ] } }
+                },
+
+                { "$ref": "data_frame/v1.json" },
+                { 
+                    "if": { "properties": { "type": { "enum": [ "data_frame" ] } } },
+                    "then": { "required": [ "data_frame" ] },
+                    "else": { "not": { "required": [ "data_frame" ] } }
+                },
+
+                { "$ref": "rds_file/v1.json" },
+                { 
+                    "if": { "properties": { "type": { "enum": [ "rds_file" ] } } },
+                    "then": { "required": [ "rds_file" ] },
+                    "else": { "not": { "required": [ "rds_file" ] } }
+                }
+            ],
+
+            "additionalProperties": false
+        }
+    }
+}

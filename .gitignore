@@ -4,4 +4,8 @@ output/
 TEST_*
 *.swp
 *.sqlite3
-
+.config/
+build/
+stringy
+merged/
+.DS_Store
