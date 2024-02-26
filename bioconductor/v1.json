@@ -13,7 +13,7 @@
         },
         "description": {
             "type": "string",
-            "description": "Description of the object.",
+            "description": "Description of the object. This can be interpreted as Markdown.",
             "_attributes": [
                 "free_text"
             ]
