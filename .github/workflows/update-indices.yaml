@@ -39,7 +39,7 @@ jobs:
         ./update.sh
         NEWSTAMP=$(cat build/modified)
         CHANGED=$(($NEWSTAMP != $OLDSTAMP))
-        echo "modified=CHANGED" >> "$GITHUB_OUTPUT"
+        echo "modified=${CHANGED}" >> "$GITHUB_OUTPUT"
 
     - name: Publishing files
       uses: softprops/action-gh-release@v1
