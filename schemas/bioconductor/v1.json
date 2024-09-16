@@ -169,7 +169,13 @@
             "allOf": [
                 { "$ref": "takane/v1.json" }
             ]
-        }
+        },
+
+        "describedby": {
+            "type": "string",
+            "description": "URI to the JSON schema to use for validating the current metadata document. This can be used to populate the [HTTP Link header of the same name](https://json-schema.org/draft/2020-12/json-schema-core#name-associating-instances-and-s) to associate each JSON instance with the schema that describes it.", 
+            "default": "https://artifactdb.github.io/bioconductor-metadata-index/bioconductor/v1.json"
+         }
     },
 
     "required": ["title", "description", "bioconductor_version", "taxonomy_id", "genome", "sources", "maintainer_name", "maintainer_email" ],
